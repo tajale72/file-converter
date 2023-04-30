@@ -4,7 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
-	"github.com/tajale72/file-converter/router"
+	"github.com/tajale72/file-converter/internal/router"
 )
 
 func main() {

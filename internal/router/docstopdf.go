@@ -3,6 +3,7 @@ package router
 import (
 	"io"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -11,18 +12,27 @@ import (
 )
 
 func FileUpload(c *gin.Context) {
-	log.Println("uploading a file.....")
 	if c.Request.Method != http.MethodPost {
 		c.JSON(http.StatusMethodNotAllowed, "Not allowed")
 		return
 	}
-
-	//Getting the input file from the request
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	successmsg := UploadFiles(file, header)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": successmsg,
+	})
+	//internal.DocsToPdf()
+}
+
+func UploadFiles(file multipart.File, header *multipart.FileHeader) string {
+	log.Println("uploading a file.....")
+
+	//Getting the input file from the request
 	defer file.Close()
 
 	//Getting the filename
@@ -44,8 +54,5 @@ func FileUpload(c *gin.Context) {
 	successmsg := "File uploaded successfully"
 	// Return success response
 	log.Println(successmsg)
-	c.JSON(http.StatusOK, gin.H{
-		"message": successmsg,
-	})
-	//internal.DocsToPdf()
+	return successmsg
 }
